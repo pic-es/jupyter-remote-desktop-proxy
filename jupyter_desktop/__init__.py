@@ -11,43 +11,27 @@ def setup_desktop():
     # This is only readable, writeable & searchable by our uid
     sockets_dir = tempfile.mkdtemp()
     sockets_path = os.path.join(sockets_dir, 'vnc-socket')
-    vncserver = which('vncserver')
 
-    if vncserver:
-        vnc_args = [
-            vncserver,
-        ]
-        socket_args = []
-    else:
-        # Use bundled tigervnc
-        vnc_args = [
-            os.path.join(HERE, 'share/tigervnc/bin/vncserver'),
-            '-rfbunixpath', sockets_path,
-        ]
-        socket_args = [
-            '--unix-target', sockets_path
-        ]
-
-    vnc_command = ' '.join(shlex.quote(p) for p in (vnc_args + [
-        '-verbose',
-        '-xstartup', os.path.join(HERE, 'share/xstartup'),
-        '-geometry', '1680x1050',
+    vnc_command = ' '.join(shlex.quote(p) for p in [
+        '/software/jupyter/tigervnc/1.10.0/usr/bin/vncserver',
+        '-rfbunixpath', sockets_path,
+        '-xstartup', '/software/jupyter/jupyter-remote-desktop-proxy/jupyter_desktop/share/xstartup',
         '-SecurityTypes', 'None',
+        '-verbose',
         '-fg',
-        ':1',
-    ]))
+    ])
+
     return {
         'command': [
             'websockify', '-v',
-            '--web', os.path.join(HERE, 'share/web/noVNC-1.1.0'),
+            '--web', '/software/jupyter/novnc',
             '--heartbeat', '30',
-            '5901',
-        ] + socket_args + [
+            '--unix-target', sockets_path,
+            '{port}',
             '--',
             '/bin/sh', '-c',
-            f'cd {os.getcwd()} && {vnc_command}'
+            f'cd {os.getcwd()} && {vnc_command}; rm -rf {sockets_dir}'
         ],
-        'port': 5901,
         'timeout': 30,
         'mappath': {'/': '/vnc_lite.html'},
         'new_browser_window': True
