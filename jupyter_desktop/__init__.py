@@ -13,9 +13,9 @@ def setup_desktop():
     sockets_path = os.path.join(sockets_dir, 'vnc-socket')
 
     vnc_command = ' '.join(shlex.quote(p) for p in [
-        '/software/jupyter/tigervnc/1.10.0/usr/bin/vncserver',
+        'vncserver',
         '-rfbunixpath', sockets_path,
-        '-xstartup', '/software/jupyter/jupyter-remote-desktop-proxy/jupyter_desktop/share/xstartup',
+        '-xstartup', os.path.join(HERE, 'share/xstartup'),
         '-SecurityTypes', 'None',
         '-verbose',
         '-fg',
@@ -24,7 +24,7 @@ def setup_desktop():
     return {
         'command': [
             'websockify', '-v',
-            '--web', '/software/jupyter/novnc',
+            '--web', os.path.join(HERE, 'share/noVNC'),
             '--heartbeat', '30',
             '--unix-target', sockets_path,
             '{port}',
