@@ -144,7 +144,8 @@
         const host = readQueryVariable('host', window.location.hostname);
         let port = readQueryVariable('port', window.location.port);
         const password = readQueryVariable('password');
-        const path = readQueryVariable('path', 'websockify');
+        //const path = readQueryVariable('path', 'websockify');
+        const path = readQueryVariable('path', window.location.pathname.replace(/[^/]*$/, '').substring(1) + 'websockify');
 
         // | | |         | | |
         // | | | Connect | | |
@@ -178,6 +179,7 @@
         // Set parameters that can be changed on an active connection
         rfb.viewOnly = readQueryVariable('view_only', false);
         rfb.scaleViewport = readQueryVariable('scale', false);
+        rfb.resizeSession = readQueryVariable('remote_resize', true);
     </script>
 </head>
 
