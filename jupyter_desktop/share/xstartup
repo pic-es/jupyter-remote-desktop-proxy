@@ -1,6 +1,5 @@
 #!/bin/sh
 cd "$HOME"
-export PATH="${PATH}:/software/jupyter/xterm/usr/bin"
 xsetroot -solid grey
 mwm &
 pid=$!
